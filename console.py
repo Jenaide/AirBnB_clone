@@ -22,7 +22,7 @@ class HBNBCommand(cmd.Cmd):
     """
     a entry point class for the cmd interpreter.
     """
-    prompt = '(hbnb)'
+    prompt = '(hbnb) '
     class_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
     def default(self, line):
