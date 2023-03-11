@@ -108,7 +108,7 @@ class HBNBCommand(cmd.Cmd):
         """
         pass
 
-    def do_create(self, args):
+    def do_create(self, line):
         """
         The create command that creates a new instance of the BaseModel and saves
         it in a JSON file and prints the id.
@@ -116,14 +116,14 @@ class HBNBCommand(cmd.Cmd):
          Attributes:
              args (str): input command prompt
         """
-        line = args.split()
-        if not self.verify_class(line):
-            return
-        instance = eval(line[0] + '()')
-        if isinstance(instance, BaseModel):
-            instance.save()
-            print(instance.id)
-        return
+        if line == "" or line is None:
+            print("*** class name missing ***")
+        elif line not in storage.classes():
+            print("*** class does not exist ***")
+        else:
+            x = storage.classes()[line]()
+            x.save()
+            print(x.id)
 
     def do_show(self, args):
         """

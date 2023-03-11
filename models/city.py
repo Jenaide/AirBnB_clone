@@ -13,11 +13,3 @@ class City(BaseModel):
     """
     name = ""
     state_id = ""
-
-    def __init__(self, *args, **kwargs):
-        """init method for City class
-        Attributes:
-            args (list): The list with arguments
-            kwargs (dict): A dictionary with arguments
-        """
-        super().__init__(*args, **kwargs)
