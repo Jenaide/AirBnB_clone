@@ -100,11 +100,13 @@ class HBNBCommand(cmd.Cmd):
         """
         the do nothing methed when there is an emty line entered
         """
+        pass
 
     def postloop(self):
         """
         the do nothing method after each console loop
         """
+        pass
 
     def do_create(self, args):
         """
@@ -176,6 +178,20 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return False
         print(to_print)
+
+    def do_count(self, args):
+        """Counts the instances of a class.
+        """
+        words = args.split()
+        if not words[0]:
+            print("** class name missing **")
+        elif words[0] not in storage.classes():
+            print("** class doesn't exist **")
+        else:
+            matches = [
+                k for k in storage.all() if k.startswith(
+                    words[0] + '.')]
+            print(len(matches))
 
     def do_update(self, args):
         """Updates an instance based on the class name and id
