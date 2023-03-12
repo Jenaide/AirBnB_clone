@@ -13,10 +13,10 @@ class User(BaseModel):
         first_name (str): Public class attribute for User's first name
         last_name (str): Public class attribute for User's last name
     """
-    email = ''
-    password = ''
-    first_name = ''
-    last_name = ''
+    email = ""
+    password = ""
+    first_name = ""
+    last_name = ""
 
     def __init__(self, *args, **kwargs):
         """init method for User class
