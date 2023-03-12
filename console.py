@@ -1,8 +1,6 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
-Created on Sat Mar 11 07:56:17 2023
-@author: Jenaide Sibolie
+Created Jenaide Sibolie
 """
 import cmd
 import models
@@ -13,125 +11,55 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-import re
-import json
-from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
-    """
-    a entry point class for the cmd interpreter.
+    """aclass that contains the entry point of the command interpreter.
     """
     prompt = '(hbnb) '
-    class_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
-
-    def default(self, line):
-        """Catch commands if nothing else matches then."""
-        # print("DEF:::", line)
-        self.precmd(line)
-
-    def precmd(self, line):
-        """Intercepts commands to test for class.syntax()"""
-        # print("PRECMD:::", line)
-        match = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", line)
-        if not match:
-            return line
-        classname = match.group(1)
-        method = match.group(2)
-        args = match.group(3)
-        match_uid_and_args = re.search('^"([^"]*)"(?:, (.*))?$', args)
-        if match_uid_and_args:
-            uid = match_uid_and_args.group(1)
-            attr_or_dict = match_uid_and_args.group(2)
-        else:
-            uid = args
-            attr_or_dict = False
-
-        attr_and_value = ""
-        if method == "update" and attr_or_dict:
-            match_dict = re.search('^({.*})$', attr_or_dict)
-            if match_dict:
-                self.update_dict(classname, uid, match_dict.group(1))
-                return ""
-            match_attr_and_value = re.search(
-                '^(?:"([^"]*)")?(?:, (.*))?$', attr_or_dict)
-            if match_attr_and_value:
-                attr_and_value = (match_attr_and_value.group(
-                    1) or "") + " " + (match_attr_and_value.group(2) or "")
-        command = method + " " + classname + " " + uid + " " + attr_and_value
-        self.onecmd(command)
-        return command
-
-    def update_dict(self, classname, uid, s_dict):
-        """Helper method for update() with a dictionary."""
-        s = s_dict.replace("'", '"')
-        d = json.loads(s)
-        if not classname:
-            print("** class name missing **")
-        elif classname not in storage.classes():
-            print("** class doesn't exist **")
-        elif uid is None:
-            print("** instance id missing **")
-        else:
-            key = "{}.{}".format(classname, uid)
-            if key not in storage.all():
-                print("** no instance found **")
-            else:
-                attributes = storage.attributes()[classname]
-                for attribute, value in d.items():
-                    if attribute in attributes:
-                        value = attributes[attribute](value)
-                    setattr(storage.all()[key], attribute, value)
-                storage.all()[key].save()
+    class_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
+                  'Review']
 
     def do_EOF(self, args):
-        """Handles End Of File character.
+        """EOF command to exit the program.
         """
-        print()
         return True
 
     def do_quit(self, args):
-        """
-        The quit command to exit the program
+        """ Quit command to exit the program.
         """
         return True
 
     def emptyline(self):
-        """
-        the do nothing methed when there is an emty line entered
+        """method to do nothing when an empty line is inputed.
         """
         pass
 
     def postloop(self):
-        """
-        the do nothing method after each console loop
+        """method to do nothing after each console loop.
         """
         pass
 
-    def do_create(self, line):
+    def do_create(self, args):
+        """Create command to create a new instance of BaseModel, save it in a
+        JSON file and prints the id.
+        Attributes:
+            args (str): inputted line in command prompt.
         """
-        The create command that creates a new instance of the BaseModel and saves
-        it in a JSON file and prints the id.
-        
-         Attributes:
-             args (str): input command prompt
-        """
-        if line == "" or line is None:
-            print("*** class name missing ***")
-        elif line not in storage.classes():
-            print("*** class does not exist ***")
-        else:
-            x = storage.classes()[line]()
-            x.save()
-            print(x.id)
+        line = args.split()
+        if not self.verify_class(line):
+            return
+        instance = eval(line[0] + '()')
+        if isinstance(instance, BaseModel):
+            instance.save()
+            print(instance.id)
+        return
 
     def do_show(self, args):
-        """
-        the show command that prints the string representation of an instance
-        based on the class name and id
-        
+        """Show command that prints the string representation of an instance
+        based on the class name and id.
         Attributes:
-            args (str): input command prompt
+           args (str): inputted line in command prompt.
         """
         line = args.split()
         if not self.verify_class(line):
@@ -145,9 +73,8 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, args):
         """Destroy command that deletes an instance based on the class name
         and id. Save the change in JSON file.
-
         Attributes:
-            args (str): input command prompt.
+            args (str): inputted line in command prompt.
         """
         line = args.split()
         if not self.verify_class(line):
@@ -179,20 +106,6 @@ class HBNBCommand(cmd.Cmd):
             return False
         print(to_print)
 
-    def do_count(self, args):
-        """Counts the instances of a class.
-        """
-        words = args.split()
-        if not words[0]:
-            print("** class name missing **")
-        elif words[0] not in storage.classes():
-            print("** class doesn't exist **")
-        else:
-            matches = [
-                k for k in storage.all() if k.startswith(
-                    words[0] + '.')]
-            print(len(matches))
-
     def do_update(self, args):
         """Updates an instance based on the class name and id
         by adding or updating attribute (save the change into the JSON file).
@@ -212,9 +125,8 @@ class HBNBCommand(cmd.Cmd):
     def default(self, args):
         """Default method that is called when the inputted command starts
         with a class name.
-
         Attributes:
-            args (str): input line string
+            args (str): The inputted line string
         """
         line = args.strip('()').split(".")
         if len(line) < 2:
@@ -262,8 +174,7 @@ class HBNBCommand(cmd.Cmd):
 
     @classmethod
     def verify_class(cls, line):
-        """Static method to verify inputed clas
-        """
+        """Static method to verify inputed class"""
         if len(line) == 0:
             print('** class name missing **')
             return False

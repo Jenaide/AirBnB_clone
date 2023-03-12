@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Authors: Jenaide Sibolie
+Created by Jenaide Sibolie
 """
 import uuid
 from datetime import datetime
@@ -24,35 +24,33 @@ class BaseModel:
                 change your object.
         """
         if len(kwargs) > 0:
-            for x, y in kwargs.items():
-                if x in ['created_at', 'updated_at']:
+            for k, v in kwargs.items():
+                if k in ['created_at', 'updated_at']:
                     self.__dict__[k] = datetime\
-                                       .strptime(y, '%Y-%m-%dT%H:%M:%S.%f')
-                elif x == 'id':
-                    self.id = y
+                                       .strptime(v, '%Y-%m-%dT%H:%M:%S.%f')
+                elif k == 'id':
+                    self.id = v
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             models.storage.new(self)
 
-
     def __str__(self):
         """str method for BaseModel Class
             Return:
                 string (str): string descriptor for BaseModel Class
         """
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
-
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id,
+                                     self.__dict__)
 
     def save(self):
         """
         updates the public instance attribute updated_at with the
         current datetime
         """
-        self.update_at = datetime.now()
+        self.updated_at = datetime.now()
         models.storage.save()
-
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of __dict__
@@ -61,7 +59,7 @@ class BaseModel:
             dictionary (dict): Dictionary object that contains __dict__
         """
         dictionary = self.__dict__.copy()
-        dictionary["created_at"] = dictionary["created_at"].isoformat()
-        dictionary["updated_at"] = dictionary["updated_at"].isoformat()
-        dictionary["__class__"] = type(self).__name__
-        return dictionary
+        dictionary["created_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updated_at.isoformat()
+        dictionary["__class__"] = self.__class__.__name__
+        return 

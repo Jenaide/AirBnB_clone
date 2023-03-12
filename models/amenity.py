@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """
-Created by
-@author: Jenaide Sibolie
+Created by Jenaide Sibolie
 """
 from models.base_model import BaseModel
 
@@ -12,3 +11,11 @@ class Amenity(BaseModel):
         name (str): Public class attribute for Amenity's name
     """
     name = ""
+
+    def __init__(self, *args, **kwargs):
+        """init method for Amenity class
+        Attributes:
+            args (list): The list with arguments
+            kwargs (dict): A dictionary with arguments
+        """
+        super().__init__(*args, **kwargs)

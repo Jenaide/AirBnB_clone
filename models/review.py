@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """
-Created by
-@author: Jenaide Sibolie
+Created by Jenaide Sibolie
 """
 from models.base_model import BaseModel
 
@@ -16,3 +15,11 @@ class Review(BaseModel):
     place_id = ""
     user_id = ""
     text = ""
+
+    def __init__(self, *args, **kwargs):
+        """init method for Review class
+        Attributes:
+            args (list): The list with arguments
+            kwargs (dict): A dictionary with arguments
+        """
+        super().__init__(*args, **kwargs)
