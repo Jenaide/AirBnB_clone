@@ -18,7 +18,7 @@ class FileStorage:
     files.
     """
     __file_path = 'file.json'
-    __objects = dict()
+    __objects = {}
 
     def __init__(self):
         """init method for FileStorage class
@@ -35,14 +35,13 @@ class FileStorage:
         Attributes:
             obj (Python object): The object to set
         """
-        dictionary = obj.to_dict()
-        key = '{}.{}'.format(dictionary['__class__'], str(obj.id))
+        key = "{}.{}".format(type(obj).__name__, obj.id)
         FileStorage.__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)
         """
-        dictionary = dict()
+        dictionary = {}
         for k, v in FileStorage.__objects.items():
             dictionary[k] = v.to_dict()
         with open(FileStorage.__file_path, 'w', encoding='utf-8') as file:
